@@ -1,0 +1,233 @@
+---
+title: "Final Project Draft"
+author: "Kristina Stern"
+date: "4/25/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction High School Girls Cross Country Trends
+```{r pressure, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("MSHSL075943MSHSL.jpg")
+```
+## What
+My project is about trends in Minnesota girls high school cross country.  I want to show how, on average, the race times have gotten faster every year and that the talent pool has deepened.  I also want to prove that placing well when you are younger does not guarantee success as you age. 
+
+## Why
+I've followed cross country and track for almost 20 years now; it is my 'fantasy football' basically.  I've noticed that, over time, the performances have been consistently getting better and I wanted to prove it statistically.  I've also had several internet forum discussions regarding girls who are deemed 'prodigies' at a young age and I am looking forward to providing evidence as to why doing well in 9th grade doesn't always translate to doing well in 12th graded. 
+
+## How
+In addition to trend fitting, I am going to be making use of subsets to be able to really look at how the data changes within particular groups.  
+
+# Body
+## Why Cross Country
+Cross country is running long distances while not on a track.  Some races are done on various trails while others are done on golf courses.  Minnesota hold their cross country championships on a golf course, which has remained at the same place since 1992.  Boys cross country state meets started in 1943 while girls meets started in 1975. Approcahces to Coaching philosophies, gear, nutrition and exposure to cross country on a bigger stage have all shifted over the years, which also contributes to the changing of running averages.  I chose cross country over track because there is more data and I chose girls cross country because girls are often overlooked when people talk about MSHSL history. 
+
+## The Data
+I used the data found on {r}[Raceberry Jam](https://www.raceberryjam.com/indexcc.html).  This site has complete data from 1991 in a semi-usable format.  There is older data out there but it isn't formatted as well and is missing various data points, such as times.  I copied and pasted it into Notepad++ and used regular expressions to re-format it into something more useable. I replaced all double white space with a comma (to perserve names in one column), replaced any double commas with a single comma (sometimes more than once) and then saved it to a CSV file.  The original data looked something like this - 
+
+    1        Megan Hasz, 11                5:15.2    13:40.9    Alexandria           
+    2        Bethany Hasz, 11              5:15.4    13:44.4    Alexandria           
+    3        Tess Misgen, 10               5:23.3    14:13.5    Shakopee             
+    4     1  Emma Benner, 11               5:25.8    14:13.6    Forest Lake          
+    5        Emily Covert, 8               5:24.8    14:15.0    Minneapolis Washburn 
+    6     2  Rachel King, 12               5:26.5    14:15.1    St. Michael-Albertvil 
+    7     3  Anna French, 12               5:17.6    14:15.9    Wayzata              
+    8     4  Annika Lerdall, 10            5:39.7    14:18.4    Wayzata              
+    9     5  Emily Betz, 12                5:27.0    14:19.0    East Ridge      
+    
+The first column is the place, the second column is the team place, followed by name, grade, average time, overall time and school.  I wasn't interested in the team place or the average time so I needed to delete those. I created a macro to delete all the cells where there was a team place and shift the remaining cells in that row over.  That made it easier to just delete the average time column once everything was aligned. For all the times prior to 2015 I had to convert them to their equivalent 5k times using this equation: 
+
+$$
+t2 = t1 * (\frac{d2}{d1})^{1.06}
+$$
+
+There was some trouble with this since the formatting wasn't always consistent.  Out of the 4617 lines of data, I had to change about 20 by hand.  I also added an index in case I needed a unique number per row but I am not sure if I really need it.  
+
+# Using the data in R
+To use the data in R, I used the readr library and then imported the data into an R table using instructions from {r}[Statology](https://www.statology.org/import-csv-into-r/). 
+```{r}
+library(readr)
+
+xc_data <-read_csv("XC.csv")
+
+```
+
+I first wanted to check to make sure that the data imported correctly.  
+```{r}
+head(xc_data)
+
+```
+
+
+I then wanted to see just how many runners from each grade there were overall:
+```{r}
+table(xc_data$Grade)
+
+```
+
+A plot of the above table:
+```{r}
+barplot(table(xc_data$Grade))
+
+```
+
+Average and standard deviation of all the running times:
+```{r}
+mean(xc_data$Time)
+sd(xc_data$Time)
+
+```
+
+I thought it would be interesting to see what buckets the race times fell into:
+```{r}
+hist(xc_data$Time)
+
+```
+
+And then do a density graph of those times: 
+```{r}
+plot(density(xc_data$Time))
+
+```
+
+
+Now I wanted to break up the data by each grade:
+```{r}
+data_7 <- subset(xc_data, xc_data$Grade == 7)
+data_8 <- subset(xc_data, xc_data$Grade == 8)
+data_9 <- subset(xc_data, xc_data$Grade == 9)
+data_10 <- subset(xc_data, xc_data$Grade == 10)
+data_11 <- subset(xc_data, xc_data$Grade == 11)
+data_12 <- subset(xc_data, xc_data$Grade == 12)
+head(data_7)
+```
+
+Plot of time
+```{r}
+sd(data_7$Time)
+sd(data_8$Time)
+sd(data_9$Time)
+sd(data_10$Time)
+sd(data_11$Time)
+sd(data_12$Time)
+```
+Plot of time
+```{r}
+mean(data_7$Time)
+mean(data_8$Time)
+mean(data_9$Time)
+mean(data_10$Time)
+mean(data_11$Time)
+mean(data_12$Time)
+```
+
+Plot of time
+```{r}
+mean(data_7$Place)
+mean(data_8$Place)
+mean(data_9$Place)
+mean(data_10$Place)
+mean(data_11$Place)
+mean(data_12$Place)
+```
+
+Plot of time
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+```
+
+okay
+```{r}
+ggplot(data = data_7) + 
+  geom_point(mapping = aes(x = Year, y = Place))
+
+```
+Ok
+
+```{r}
+table(data_7$Place)
+table(data_8$Place)
+table(data_9$Place)
+table(data_10$Place)
+table(data_11$Place)
+table(data_12$Place)
+```
+
+Plot of time
+```{r}
+sum(xc_data$Grade == 7)
+sum(xc_data$Grade == 8)
+sum(xc_data$Grade == 9)
+sum(xc_data$Grade == 10)
+sum(xc_data$Grade == 11)
+sum(xc_data$Grade == 12)
+```
+
+Plot of time
+```{r}
+aggregate(data_12$Place, list(data_12$Year), FUN = mean)
+```
+Plot of time
+```{r}
+aggregate(data_12$Place, list(data_12$Year), FUN = mean)
+```
+Plot of time
+```{r}
+multi_run <- xc_data %>% group_by(xc_data$Name) %>% filter(n()>1)
+multi_run
+```
+sim
+```{r}
+sum(multi_run$Grade==7)/sum(xc_data$Grade==7)
+sum(multi_run$Grade==8)/sum(xc_data$Grade==8)
+sum(multi_run$Grade==9)/sum(xc_data$Grade==9)
+sum(multi_run$Grade==10)/sum(xc_data$Grade==10)
+sum(multi_run$Grade==11)/sum(xc_data$Grade==11)
+sum(multi_run$Grade==12)/sum(xc_data$Grade==12)
+```
+sum
+```{r}
+subset(multi_run, multi_run$`xc_data$Name`=="Lauren Peterson")
+```
+Schools
+```{r}
+top_10 = subset(multi_run, multi_run$Place<11)
+table(top_10$Grade)
+```
+summ
+```{r}
+sum(top_10$Grade==7)/sum(xc_data$Grade==7)
+sum(top_10$Grade==8)/sum(xc_data$Grade==8)
+sum(top_10$Grade==9)/sum(xc_data$Grade==9)
+sum(top_10$Grade==10)/sum(xc_data$Grade==10)
+sum(top_10$Grade==11)/sum(xc_data$Grade==11)
+sum(top_10$Grade==12)/sum(xc_data$Grade==12)
+```
+
+```{r}
+data_9_12 <- rbind(subset(top_10, top_10$Grade == 9),subset(top_10, top_10$Grade == 12))
+data_9_12
+```
+
+```{r}
+data_9_12[duplicated(data_9_12$`xc_data$Name`), ]
+```
+```{r}
+data_11_12 <- rbind(subset(top_10, top_10$Grade == 11),subset(top_10, top_10$Grade == 12))
+data_11_12
+```
+
+```{r}
+data_11_12[duplicated(data_11_12$`xc_data$Name`), ]
+```
+
+```{r}
+multi_run[!duplicated(multi_run$`xc_data$Name`), ]
+```
