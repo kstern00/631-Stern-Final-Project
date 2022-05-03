@@ -1,7 +1,7 @@
 ---
 title: "Final Project Draft"
 author: "Kristina Stern"
-date: "4/25/2022"
+date: "5/3/2022"
 output: pdf_document
 ---
 
@@ -9,10 +9,17 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r load-packages, include=FALSE}
+library(dplyr)
+library(magrittr)
+library(knitr)
+```
+
 # Introduction High School Girls Cross Country Trends
-```{r pressure, echo=FALSE, out.width = '100%'}
+```{r pressure, echo=FALSE, out.width = '100%', fig.align="center"}
 knitr::include_graphics("MSHSL075943MSHSL.jpg")
 ```
+
 ## What
 My project is about trends in Minnesota girls high school cross country.  I want to show how, on average, the race times have gotten faster every year and that the talent pool has deepened.  I also want to prove that placing well when you are younger does not guarantee success as you age. 
 
@@ -20,14 +27,14 @@ My project is about trends in Minnesota girls high school cross country.  I want
 I've followed cross country and track for almost 20 years now; it is my 'fantasy football' basically.  I've noticed that, over time, the performances have been consistently getting better and I wanted to prove it statistically.  I've also had several internet forum discussions regarding girls who are deemed 'prodigies' at a young age and I am looking forward to providing evidence as to why doing well in 9th grade doesn't always translate to doing well in 12th graded. 
 
 ## How
-In addition to trend fitting, I am going to be making use of subsets to be able to really look at how the data changes within particular groups.  
+In addition to trend fitting, I am going to be making use of subsets to be able to really look at how the data changes within particular groups. I will also be using a data filter to find runners who have appeared more than once in the data set. 
 
 # Body
 ## Why Cross Country
 Cross country is running long distances while not on a track.  Some races are done on various trails while others are done on golf courses.  Minnesota hold their cross country championships on a golf course, which has remained at the same place since 1992.  Boys cross country state meets started in 1943 while girls meets started in 1975. Approcahces to Coaching philosophies, gear, nutrition and exposure to cross country on a bigger stage have all shifted over the years, which also contributes to the changing of running averages.  I chose cross country over track because there is more data and I chose girls cross country because girls are often overlooked when people talk about MSHSL history. 
 
 ## The Data
-I used the data found on {r}[Raceberry Jam](https://www.raceberryjam.com/indexcc.html).  This site has complete data from 1991 in a semi-usable format.  There is older data out there but it isn't formatted as well and is missing various data points, such as times.  I copied and pasted it into Notepad++ and used regular expressions to re-format it into something more useable. I replaced all double white space with a comma (to perserve names in one column), replaced any double commas with a single comma (sometimes more than once) and then saved it to a CSV file.  The original data looked something like this - 
+I used the data found on [Raceberry Jam](https://www.raceberryjam.com/indexcc.html).  This site has complete data from 1991 in a semi-usable format.  There is older data out there but it isn't formatted as well and is missing various data points, such as times.  I copied and pasted it into Notepad++ and used regular expressions to re-format it into something more usable. I replaced all double white space with a comma (to perserve names in one column), replaced any double commas with a single comma (sometimes more than once) and then saved it to a CSV file.  The original data looked something like this - 
 
     1        Megan Hasz, 11                5:15.2    13:40.9    Alexandria           
     2        Bethany Hasz, 11              5:15.4    13:44.4    Alexandria           
@@ -48,7 +55,7 @@ $$
 There was some trouble with this since the formatting wasn't always consistent.  Out of the 4617 lines of data, I had to change about 20 by hand.  I also added an index in case I needed a unique number per row but I am not sure if I really need it.  
 
 # Using the data in R
-To use the data in R, I used the readr library and then imported the data into an R table using instructions from {r}[Statology](https://www.statology.org/import-csv-into-r/). 
+To use the data in R, I used the readr library and then imported the data into an R table using instructions from [Statology](https://www.statology.org/import-csv-into-r/). 
 ```{r}
 library(readr)
 
@@ -93,7 +100,60 @@ And then do a density graph of those times:
 plot(density(xc_data$Time))
 
 ```
+Let's look at the data for a few specific places:
+```{r}
+place_1 <- subset(xc_data, xc_data$Place == 1)
+place_10 <- subset(xc_data, xc_data$Place == 10)
+place_50 <- subset(xc_data, xc_data$Place == 50)
+place_100 <- subset(xc_data, xc_data$Place == 100)
+place_150 <- subset(xc_data, xc_data$Place == 150)
+head(place_1)
+```
 
+
+
+Plotting the times with a line fit and coefficients for 1st place:
+```{r}
+plot(place_1$Year, place_1$Time)
+abline(lm(place_1$Time ~ place_1$Year))
+summary(lm(place_1$Time ~ place_1$Year))$coefficients
+```
+Plotting the times with a line fit and coefficients for 10th place:
+```{r}
+plot(place_10$Year, place_10$Time)
+abline(lm(place_10$Time ~ place_10$Year))
+summary(lm(place_10$Time ~ place_10$Year))$coefficients
+```
+Plotting the times with a line fit and coefficients for 50th place:
+```{r}
+plot(place_50$Year, place_50$Time)
+abline(lm(place_50$Time ~ place_50$Year))
+summary(lm(place_50$Time ~ place_50$Year))$coefficients
+```
+Plotting the times with a line fit and coefficients for 100th place:
+```{r}
+plot(place_100$Year, place_100$Time)
+abline(lm(place_100$Time ~ place_100$Year))
+summary(lm(place_100$Time ~ place_100$Year))$coefficients
+```
+Plotting the times with a line fit and coefficients for 150th place:
+```{r}
+plot(place_150$Year, place_150$Time)
+abline(lm(place_150$Time ~ place_150$Year))
+summary(lm(place_150$Time ~ place_150$Year))$coefficients
+```
+As you can see, there is noticeable difference between the trends from 1st place to 150th place.  
+```{r}
+-0.03437327*60
+-0.1141237*60
+```
+The first place times decreased, on average, of about 2 seconds per year while the 150th place times decreased at a rate of -6.8 seconds a year.  
+
+```{r}
+-2.062396*30/60
+-6.847422*30/60
+```
+The girls in 1st place are about a minute faster and the girls in 150th place are about 3.5 minutes faster compared to 30 years ago.  
 
 Now I wanted to break up the data by each grade:
 ```{r}
@@ -106,7 +166,7 @@ data_12 <- subset(xc_data, xc_data$Grade == 12)
 head(data_7)
 ```
 
-Plot of time
+Standard deviation of the times per grade:
 ```{r}
 sd(data_7$Time)
 sd(data_8$Time)
@@ -115,7 +175,7 @@ sd(data_10$Time)
 sd(data_11$Time)
 sd(data_12$Time)
 ```
-Plot of time
+Average of the times per grade:
 ```{r}
 mean(data_7$Time)
 mean(data_8$Time)
@@ -125,7 +185,7 @@ mean(data_11$Time)
 mean(data_12$Time)
 ```
 
-Plot of time
+Averages of the place per grade:
 ```{r}
 mean(data_7$Place)
 mean(data_8$Place)
@@ -134,56 +194,14 @@ mean(data_10$Place)
 mean(data_11$Place)
 mean(data_12$Place)
 ```
+Seeing this has re-oriented my thoughts on the younger runners a little bit.  I think that some of the 7th graders are filling empty slots on smaller teams so not all of them would finish very high.  
 
-Plot of time
-```{r}
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-```
-
-okay
-```{r}
-ggplot(data = data_7) + 
-  geom_point(mapping = aes(x = Year, y = Place))
-
-```
-Ok
-
-```{r}
-table(data_7$Place)
-table(data_8$Place)
-table(data_9$Place)
-table(data_10$Place)
-table(data_11$Place)
-table(data_12$Place)
-```
-
-Plot of time
-```{r}
-sum(xc_data$Grade == 7)
-sum(xc_data$Grade == 8)
-sum(xc_data$Grade == 9)
-sum(xc_data$Grade == 10)
-sum(xc_data$Grade == 11)
-sum(xc_data$Grade == 12)
-```
-
-Plot of time
-```{r}
-aggregate(data_12$Place, list(data_12$Year), FUN = mean)
-```
-Plot of time
-```{r}
-aggregate(data_12$Place, list(data_12$Year), FUN = mean)
-```
-Plot of time
+Now I wanted to find all the runners who have made at least 2 trips to the championship race:
 ```{r}
 multi_run <- xc_data %>% group_by(xc_data$Name) %>% filter(n()>1)
 multi_run
 ```
-sim
+The ratio of runners who ran in the championships more than once versus overall per grade:
 ```{r}
 sum(multi_run$Grade==7)/sum(xc_data$Grade==7)
 sum(multi_run$Grade==8)/sum(xc_data$Grade==8)
@@ -192,42 +210,64 @@ sum(multi_run$Grade==10)/sum(xc_data$Grade==10)
 sum(multi_run$Grade==11)/sum(xc_data$Grade==11)
 sum(multi_run$Grade==12)/sum(xc_data$Grade==12)
 ```
-sum
-```{r}
-subset(multi_run, multi_run$`xc_data$Name`=="Lauren Peterson")
-```
-Schools
+
+Then I wanted to find all the girls in top ten over the 30 year period:
 ```{r}
 top_10 = subset(multi_run, multi_run$Place<11)
-table(top_10$Grade)
-```
-summ
-```{r}
-sum(top_10$Grade==7)/sum(xc_data$Grade==7)
-sum(top_10$Grade==8)/sum(xc_data$Grade==8)
-sum(top_10$Grade==9)/sum(xc_data$Grade==9)
-sum(top_10$Grade==10)/sum(xc_data$Grade==10)
-sum(top_10$Grade==11)/sum(xc_data$Grade==11)
-sum(top_10$Grade==12)/sum(xc_data$Grade==12)
+top_10
 ```
 
+To begin to test my theory of girls not being prodigies when they run fast in 9th grade, I made a data set of all the girls who were in the top 10 in 9th and 12th grade and who had run in the championship more than once:
 ```{r}
 data_9_12 <- rbind(subset(top_10, top_10$Grade == 9),subset(top_10, top_10$Grade == 12))
 data_9_12
 ```
-
+To get the real number of girls in this, I needed to find the duplicate names:
 ```{r}
 data_9_12[duplicated(data_9_12$`xc_data$Name`), ]
 ```
+As you can see, of the 105 girls who fit in the previous filter, only 14 had been top 10 in 9th and 12th grade.
+
+Now, lets do the same for 11th and 12th grade:
 ```{r}
 data_11_12 <- rbind(subset(top_10, top_10$Grade == 11),subset(top_10, top_10$Grade == 12))
 data_11_12
 ```
-
+Finding the duplicate names:
 ```{r}
 data_11_12[duplicated(data_11_12$`xc_data$Name`), ]
 ```
+For 11th and 12th grade, 30 out of 103 girls had been in the top 10 more than once.  
 
+The ratios of that would be:
 ```{r}
-multi_run[!duplicated(multi_run$`xc_data$Name`), ]
+14/105
+30/103
 ```
+The data makes it quite clear that you have less than half the chance of appearing in the top 10 as a 9th and 12th grader vs as an 11th and 12th grader.
+
+One thing I'd like to do is make a function that will automatically create the subsets depending on what data you give it. I could do it in Python easily but I am not as familiar with how to write functions in R. 
+
+# Topics From Class
+## RMarkdown
+Honestly, I love R Markdown.  It is relatively easy to use and really does a great job of presenting your data/findings in a very organized way.  I still have a lot to learn about R (such as functions which I mentioned above) but I can't see myself ever presenting data in a different way now.  
+
+## Github
+I have heard of Github and used it to download some code but I've never actually used it before.  It took some figuring out for me but I eventually got it to work (I think as of writing this).  I can definitely see myself using it more in my schoolwork.  Learning the concepts will also help me with future software jobs where they may use a similar type of system.  
+
+## Regression
+I needed to do linear regression to find the line fits and the slope intercept of my data.  I enjoy algebra and have used y=mx+b frequently in my education and career but I had never really done it with large sets of data before.  It was interesting to see how it worked and I like how R does it compared to Excel.  
+
+## Probability
+I think it would be hard to do any of this without using probabilities, although my use of them were fairly simple. It was very interesting to see the ratios in my data. Using probabilities also helped me see some gaps in my data that I normally wouldn't have thought of. For instance, there are far fewer 7th and 8th grade data points and that impacted a few of my calculations.
+
+## Normal Distribution
+Plotting the overall times and finding the standard deviation difference between grades really helped me to visualize the data better. Again, like with probability, it also helped to highlight things I may have not considered or overlooked in the beginning.  
+
+# Conclusion
+The data shows that my initial hypothesis, that times have gotten faster and the talent depth has improved, was correct.  I also think there is evidence that fast girls do slow down as they age but I am not sure if there is enough data to have a definite conclusion. Cross country data has always been a passion of mine so it was fun to actually do something with everything I have observed over the last 20 years. While I have always loved playing with data and math, stats has never been my strong suit so doing this helped me a lot in understanding how to use statistics. I really want to use everything I've learned to create a predictive model for college cross country.  There are a number of websites out there that have prediction contests so it would be fun to participate with math at my back.
+
+# Sources
+I made extended use of [Statology](www.statology.org) for basically every question I had.  
+
+I used this [site](https://jennybc.github.io/2014-05-12-ubc/ubc-r/session2.4_github.html) for help in setting up GitHub for my project since I wasn't able to do it correctly in class.  
