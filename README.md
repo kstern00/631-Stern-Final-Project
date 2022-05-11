@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Introduction High School Girls Cross Country Trends
 
 <img src="MSHSL075943MSHSL.jpg" width="100%" style="display: block; margin: auto;" />
@@ -613,3 +614,8 @@ I used this
 [site](https://jennybc.github.io/2014-05-12-ubc/ubc-r/session2.4_github.html)
 for help in setting up GitHub for my project since I wasn’t able to do
 it correctly in class.
+=======
+# 631-Stern-Final-Project
+
+This project is about cross country statistics and the differences over a 30 year period.
+>>>>>>> 96a47c708e5b51fe9ddfdb0c9347b58f44bb038e
