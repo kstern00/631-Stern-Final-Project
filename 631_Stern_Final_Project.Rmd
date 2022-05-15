@@ -1,7 +1,7 @@
 ---
 title: "High School Girls Cross Country Trends"
 author: "Kristina Stern"
-date: "5/3/2022"
+date: "5/15/2022"
 output: pdf_document
 ---
 
@@ -26,7 +26,7 @@ knitr::include_graphics("MSHSL075943MSHSL.jpg")
 My project is about trends in Minnesota girls high school cross country.  I want to show how, on average, the race times have gotten faster every year and that the talent pool has deepened.  I also want to prove that placing well when you are younger does not guarantee success as you age. 
 
 ## Why
-I've followed cross country and track for almost 20 years now; it is my 'fantasy football' basically.  I've noticed that, over time, the performances have been consistently getting better and I wanted to prove it statistically.  I've also had several internet forum discussions regarding girls who are deemed 'prodigies' at a young age and I am looking forward to providing evidence as to why doing well in 9th grade doesn't always translate to doing well in 12th grade. 
+I've followed cross country and track for almost 20 years now; it is my 'fantasy football' basically.  I've noticed that, over time, the performances have been consistently getting better and I wanted to prove it statistically.  I've also had several heated internet forum discussions regarding girls who are deemed 'prodigies' at a young age and I am looking forward to providing evidence as to why doing well in 9th grade doesn't always translate to doing well in 12th grade. 
 
 ## How
 In addition to trend fitting, I am going to be making use of subsets to be able to really look at how the data changes within particular groups. I will also be using a data filter to find runners who have appeared more than once in the data set. 
@@ -54,7 +54,7 @@ $$
 t2 = t1 * (\frac{d2}{d1})^{1.06}
 $$
 
-There was some trouble with this since the formatting wasn't always consistent.  Out of the 4617 lines of data, I had to change about 20 by hand.  I also added an index in case I needed a unique number per row but I am not sure if I really need it.  
+There was some trouble with this since the formatting wasn't always consistent.  Out of the 4617 lines of data, I had to change about 20 by hand.  I originally added an index to the data but found I didn't need it so I removed it from the final dataset. 
 
 # Using the data in R
 To use the data in R, I used the readr library and then imported the data into an R table using instructions from [Statology](https://www.statology.org/import-csv-into-r/). 
@@ -111,13 +111,14 @@ sd(times_2015$Time)
 ```
 This shows that not only were times faster in 2015 but the spread was much tighter. 
 
-Let's look at the data for a few specific places. First place:
+Let's look at the data for a few specific places. I wanted to include 150th place in my plots but the race didn't have as many participants the first decade.  
+
+First place:
 ```{r, echo=FALSE}
 place_1 <- subset(xc_data, xc_data$Place == 1)
 place_10 <- subset(xc_data, xc_data$Place == 10)
 place_50 <- subset(xc_data, xc_data$Place == 50)
 place_100 <- subset(xc_data, xc_data$Place == 100)
-place_150 <- subset(xc_data, xc_data$Place == 150)
 head(place_1)
 ```
 
@@ -157,24 +158,19 @@ plot(place_100$Year, place_100$Time, main = "Scatter Plot of Times for 100th Pla
 abline(lm(place_100$Time ~ place_100$Year))
 summary(lm(place_100$Time ~ place_100$Year))$coefficients
 ```
-Plotting the times with a line fit and coefficients for 150th place:
-```{r, echo=FALSE, fig.align='left'}
-plot(place_150$Year, place_150$Time, main = "Scatter Plot of Times for 150th Place", xlab = "Year", ylab = "Time (min)")
-abline(lm(place_150$Time ~ place_150$Year))
-summary(lm(place_150$Time ~ place_150$Year))$coefficients
-```
-As you can see, there is noticeable difference between the trends from 1st place to 150th place.  
+
+As you can see, there is noticeable difference between the trends from 1st place to 100th place.  
 ```{r}
 -0.03437327*60
--0.1141237*60
+-0.06401809 *60
 ```
-The first place times decreased, on average, of about 2 seconds per year while the 150th place times decreased at a rate of -6.8 seconds a year.  
+The first place times decreased, on average, of about 2 seconds per year while the 100th place times decreased at a rate of -3.8 seconds a year.  
 
 ```{r}
 -2.062396*30/60
--6.847422*30/60
+-3.841085*30/60
 ```
-The girls in 1st place are about a minute faster and the girls in 150th place are about 3.5 minutes faster compared to 30 years ago.  
+The girls in 1st place are about a minute faster and the girls in 100th place are almost 2 minutes faster compared to 30 years ago.  
 
 I realize that while a linear correlation works right now, that the actual fit is an exponential decay.  At some point, the improvement in times will flatten because it is impossible for them to get to zero.  However, due to the nature of the data, it is difficult at this time to find that actual fit line.  In 30 more years, when there is more data towards the tail, it would be easier to have a predictive model. 
 
@@ -319,25 +315,29 @@ data_8_10[duplicated(data_8_10$`xc_data$Name`), ]
 ```
 Again, a very similar ratio to the 9th and 12th grade data. 
 
-# Conclusion
-The data shows that my initial hypothesis, that times have gotten faster and the talent depth has improved, was correct.  I also think there is evidence that fast girls do slow down as they age but I am not sure if there is enough data to have a definite conclusion. Cross country data has always been a passion of mine so it was fun to actually do something with everything I have observed over the last 20 years. While I have always loved playing with data and math, stats has never been my strong suit so doing this helped me a lot in understanding how to use statistics. I really want to use everything I've learned to create a predictive model for college cross country.  There are a number of websites out there that have prediction contests so it would be fun to participate with math at my back.
 
 # Topics From Class
 ## RMarkdown
 Honestly, I love R Markdown.  It is relatively easy to use and really does a great job of presenting your data/findings in a very organized way.  I still have a lot to learn about R (such as functions which I mentioned above) but I can't see myself ever presenting data in a different way now.  
 
 ## Github
-I have heard of Github and used it to download some code but I've never actually used it before.  It took some figuring out for me but I eventually got it to work (I think as of writing this).  I can definitely see myself using it more in my schoolwork.  Learning the concepts will also help me with future software jobs where they may use a similar type of system.  
+I have heard of Github and used it to download some code but I've never actually used it before.  It took some figuring out for me but I eventually got it to work and I really like it.  I can definitely see myself using it more in my schoolwork.  Learning the concepts will also help me with future software jobs where they may use a similar type of system.  
 
 ## Regression
-I needed to do linear regression to find the line fits and the slope intercept of my data.  I enjoy algebra and have used y=mx+b frequently in my education and career but I had never really done it with large sets of data before.  It was interesting to see how it worked and I like how R does it compared to Excel.  
+I needed to do linear regression to find the line fits and the slope intercept of my data.  I enjoy algebra and have used y=mx+b frequently in my education and career but I had never really done it with large sets of data before.  It was interesting to see how it worked and I like how R does it compared to Excel. If I continue with this topic in future data analysis classes I will see if I can find a exponential decay fit for it.
 
 ## Probability
-I think it would be hard to do any of this without using probabilities, although my use of them were fairly simple. It was very interesting to see the ratios in my data. Using probabilities also helped me see some gaps in my data that I normally wouldn't have thought of. For instance, there are far fewer 7th and 8th grade data points and that impacted a few of my calculations.
+I think finding the probability for girls who were good runners in different grades was actually my favorite part of this entire project. It was also a good opportunity to see aspects to R we didn't learn in class and, ultimately, it was very interesting to see the ratios in my data. Using probabilities also helped me see some gaps in my data that I normally wouldn't have thought of. For instance, there are far fewer 7th and 8th grade data points and that impacted a few of my calculations. 
 
 ## Normal Distribution
-Plotting the overall times and finding the standard deviation difference between grades really helped me to visualize the data better. Again, like with probability, it also helped to highlight things I may have not considered or overlooked in the beginning.  
+Coming from my draft, I had a different approach to this.  Listening to feedback from my classmates and seeing what others did with their projects had me rethink of how to show the data distribution.  Instead of showing just one denisty plot of all the times from over the 30 years, I thought it would be better to show two different years in order to demonstrate the change in distribution.
 
+# Conclusion
+The data shows that my initial hypothesis, that times have gotten faster and the talent depth has improved, was correct.  I also think there is evidence that fast girls do slow down as they age but I am not sure if there is enough data to have a definite conclusion. Cross country data has always been a passion of mine so it was fun to actually do something with everything I have observed over the last 20 years. While I have always loved playing with data and math, stats has never been my strong suit so doing this helped me a lot in understanding how to use statistics. 
+
+I learned a lot about R and re familiarized myself with some math (notably using natural logarithms when I was trying to fit a curve to the data and ended up not doing).  As stated above, I really wanted to fit a line showing the decay on the scatter plots but I don't think the data was uniform enough for that.  Maybe there is a way to do it with the data I have, if so I would like to learn what that is. Due to that, I don't think a predictive model would be accurate at this time due to it being based on a linear trend and not a logarithmic one. 
+
+One thing I would have liked to do is show more plots and make more data sets.  I think that would tell a better story overall but I felt that was probably too much for this project at this time. 
 
 ## Future Improvements
 In the future, one thing I'd like to do is make a function that will automatically create the subsets depending on what data you give it. I could do it in Python easily but I am not as familiar with how to write functions in R.
