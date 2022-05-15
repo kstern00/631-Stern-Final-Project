@@ -26,14 +26,14 @@ knitr::include_graphics("MSHSL075943MSHSL.jpg")
 My project is about trends in Minnesota girls high school cross country.  I want to show how, on average, the race times have gotten faster every year and that the talent pool has deepened.  I also want to prove that placing well when you are younger does not guarantee success as you age. 
 
 ## Why
-I've followed cross country and track for almost 20 years now; it is my 'fantasy football' basically.  I've noticed that, over time, the performances have been consistently getting better and I wanted to prove it statistically.  I've also had several internet forum discussions regarding girls who are deemed 'prodigies' at a young age and I am looking forward to providing evidence as to why doing well in 9th grade doesn't always translate to doing well in 12th graded. 
+I've followed cross country and track for almost 20 years now; it is my 'fantasy football' basically.  I've noticed that, over time, the performances have been consistently getting better and I wanted to prove it statistically.  I've also had several internet forum discussions regarding girls who are deemed 'prodigies' at a young age and I am looking forward to providing evidence as to why doing well in 9th grade doesn't always translate to doing well in 12th grade. 
 
 ## How
 In addition to trend fitting, I am going to be making use of subsets to be able to really look at how the data changes within particular groups. I will also be using a data filter to find runners who have appeared more than once in the data set. 
 
 # Body
 ## Why Cross Country
-Cross country is running long distances while not on a track.  Some races are done on various trails while others are done on golf courses.  Minnesota hold their cross country championships on a golf course, which has remained at the same place since 1992.  Boys cross country state meets started in 1943 while girls meets started in 1975. Approaches to Coaching philosophies, gear, nutrition and exposure to cross country on a bigger stage have all shifted over the years, which also contributes to the changing of running averages.  I chose cross country over track because there is more data and I chose girls cross country because girls are often overlooked when people talk about MSHSL history. 
+Cross country is running long distances while not on a track.  Some races are done on various trails while others are done on golf courses.  Minnesota hold their cross country championships on a golf course, which has remained at the same place since 1992.  Boys cross country state meets started in 1943 while girls meets started in 1975. Approaches to Coaching philosophies, gear, nutrition and exposure to cross country on a bigger stage have all shifted over the years, which also contributes to the changing of running averages.  I chose cross country over track because there is more data and I chose girls cross country because girls are often overlooked when people talk about MSHSL history. Women's sports are often marginalized and not taken as seriously as men's sports, with Title IX still undergoing attacks 50 years later.  I wanted to demonstrate the huge strides women (and girls) have taken over the years in the sport. 
 
 ## The Data
 I used the data found on [Raceberry Jam](https://www.raceberryjam.com/indexcc.html).  This site has complete data from 1991 in a semi-usable format.  There is older data out there but it isn't formatted as well and is missing various data points, such as times.  I copied and pasted it into Notepad++ and used regular expressions to re-format it into something more usable. I replaced all double white space with a comma (to preserve names in one column), replaced any double commas with a single comma (sometimes more than once) and then saved it to a CSV file.  The original data looked something like this - 
@@ -319,7 +319,8 @@ data_8_10[duplicated(data_8_10$`xc_data$Name`), ]
 ```
 Again, a very similar ratio to the 9th and 12th grade data. 
 
-In the future, one thing I'd like to do is make a function that will automatically create the subsets depending on what data you give it. I could do it in Python easily but I am not as familiar with how to write functions in R. 
+# Conclusion
+The data shows that my initial hypothesis, that times have gotten faster and the talent depth has improved, was correct.  I also think there is evidence that fast girls do slow down as they age but I am not sure if there is enough data to have a definite conclusion. Cross country data has always been a passion of mine so it was fun to actually do something with everything I have observed over the last 20 years. While I have always loved playing with data and math, stats has never been my strong suit so doing this helped me a lot in understanding how to use statistics. I really want to use everything I've learned to create a predictive model for college cross country.  There are a number of websites out there that have prediction contests so it would be fun to participate with math at my back.
 
 # Topics From Class
 ## RMarkdown
@@ -337,8 +338,9 @@ I think it would be hard to do any of this without using probabilities, although
 ## Normal Distribution
 Plotting the overall times and finding the standard deviation difference between grades really helped me to visualize the data better. Again, like with probability, it also helped to highlight things I may have not considered or overlooked in the beginning.  
 
-# Conclusion
-The data shows that my initial hypothesis, that times have gotten faster and the talent depth has improved, was correct.  I also think there is evidence that fast girls do slow down as they age but I am not sure if there is enough data to have a definite conclusion. Cross country data has always been a passion of mine so it was fun to actually do something with everything I have observed over the last 20 years. While I have always loved playing with data and math, stats has never been my strong suit so doing this helped me a lot in understanding how to use statistics. I really want to use everything I've learned to create a predictive model for college cross country.  There are a number of websites out there that have prediction contests so it would be fun to participate with math at my back.
+
+## Future Improvements
+In the future, one thing I'd like to do is make a function that will automatically create the subsets depending on what data you give it. I could do it in Python easily but I am not as familiar with how to write functions in R.
 
 # Sources
 I made extended use of [Statology](www.statology.org) for basically every question I had.  
